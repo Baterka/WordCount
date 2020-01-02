@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 
         // Initialize counter
         auto *counter = new Counter(parser->getFiles(), parser->isMultiThreaded(), parser->getDivider(),
-                                    parser->isNewLineDivider());
+                                    parser->isNewLineDivider(), parser->getNGramSize());
 
         // Start time measurement
         auto start = chrono::steady_clock::now();
@@ -31,14 +31,14 @@ int main(int argc, char *argv[]) {
 
             cout << endl << "Printing output into file..." << endl;
             for (const auto &w : words) {
-                fout << w.first << " " << w.second << endl;
+                fout << w.second << " " << w.first << endl;
                 total += w.second;
             }
             fout.close();
         } else {
             cout << endl << "Printing output:" << endl;
             for (const auto &w : words) {
-                cout << w.first << " " << w.second << endl;
+                cout << w.second << " " << w.first << endl;
                 total += w.second;
             }
         }
