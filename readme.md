@@ -1,5 +1,5 @@
 
-# WordCount
+# WordCount (WIP)
 Semestral project for the subject **[B6B36PJC](https://www.fel.cvut.cz/en/education/bk/predmety/31/30/p3130206.html)** on **[FEE CTU](https://www.fel.cvut.cz/)** in winter semester 2019.
 
 # Task
