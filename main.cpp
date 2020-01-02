@@ -1,7 +1,9 @@
-#include <unistd.h>
 #include <iostream>
+#include <thread>
+#include <mutex>
+#include <atomic>
 
-#include "parser.hpp"
+#include "counter.hpp"
 
 using namespace std;
 
@@ -11,9 +13,18 @@ int main(int argc, char *argv[]) {
         auto *parser = new Parser(argc, argv);
 
         // Initialize counter
-        auto *counter = new Counter(parser->getFiles(), parser->isMultithreaded());
+        auto *counter = new Counter(parser->getFiles(), parser->isMultiThreaded(), parser->getDivider());
 
-    } catch (...) {
+
+        auto start = chrono::steady_clock::now();
+        int words = counter->getWords();
+        auto end = chrono::steady_clock::now();
+
+        cout << endl << "Total words: " << words << " | Took: "
+             << chrono::duration_cast<chrono::milliseconds>(end - start).count() << "ms" << endl;
+
+    } catch (const std::exception &e) {
+        cerr << "Error: " << e.what() << endl;
         return 0;
     }
 }

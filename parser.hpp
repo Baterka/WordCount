@@ -4,19 +4,22 @@
 
 #include <vector>
 #include <cstring>
+#include <iostream>
 
 using namespace std;
 
 class Parser {
 private:
     vector<string> m_files;
-    bool m_multithreaded = false;
+    bool m_multiThreaded = false;
+    char m_divider = ' ';
 
     void show_help(string program) {
-        cerr << "Usage: " << program << " FILES" << endl
-             << "\tFILES\t\t\t\t\tSource files (separated by space)\n"
-             << "\t-h, --help\t\t\t\tShow this help message\n"
-             << "\t-mt, --multithreaded \tRun each file in different thread\n"
+        cerr << "Usage:\t" << program << " FILES" << endl
+             << "\t\tFILES\t\t\t\t\tSource files (separated by space)\n"
+             << "\t\t-h, --help\t\t\t\tShow this help message\n"
+             //<< "\t-d, --divider \t\t\tWhat will be considered as word divider (Optional, default is Space)\n"
+             << "\t\t-mt, --multithreaded \tRun each file in different thread\n"
              << endl;
     }
 
@@ -34,7 +37,7 @@ public:
             string arg = argv[i];
             if (isParameter(arg)) {
                 if (arg == "-mt" || arg == "--multithreaded")
-                    m_multithreaded = true;
+                    m_multiThreaded = true;
                 else if (arg == "-h" || arg == "--help")
                     show_help(argv[0]);
                 else {
@@ -52,7 +55,11 @@ public:
         return m_files;
     }
 
-    bool isMultithreaded() {
-        return m_multithreaded;
+    bool isMultiThreaded() {
+        return m_multiThreaded;
+    }
+
+    char getDivider() {
+        return m_divider;
     }
 };
