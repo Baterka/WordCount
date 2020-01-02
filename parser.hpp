@@ -12,15 +12,18 @@ class Parser {
 private:
     vector<string> m_files;
     bool m_multiThreaded = false;
-    char m_divider = ' ';
+    bool m_new_line_is_divider = false;
+    char m_divider = 32;
+    string m_output_file;
 
     void show_help(string program) {
-        cerr << "Usage:\t" << program << " FILES" << endl
-             << "\t\tFILES\t\t\t\t\tSource files (separated by space)\n"
-             << "\t\t-h, --help\t\t\t\tShow this help message\n"
-             //<< "\t-d, --divider \t\t\tWhat will be considered as word divider (Optional, default is Space)\n"
-             << "\t\t-mt, --multithreaded \tRun each file in different thread\n"
-             << endl;
+        cerr << program << " FILES" << endl
+             << "\tFILES\t\t\t\t\t\t\t\t\tSource files (separated by space)\n"
+             << "\t-h, --help\t\t\t\t\t\t\t\tShow this help message\n"
+             << "\t-d CHAR, --divider CHAR \t\t\t\tWhat will be considered as word divider (Optional, default is \" \")\n"
+             << "\t-nld, --new_line_divider \t\t\t\tNew line in file is also divider (Optional)\n"
+             << "\t-mt, --multi_threaded \t\t\t\t\tRun each file in different thread (Optional)\n"
+             << "\t-of FILENAME, --output_file FILENAME \tPrint output into file (Optional)\n";
     }
 
     static bool isParameter(string s) {
@@ -33,20 +36,44 @@ public:
             show_help(argv[0]);
             throw invalid_argument("Invalid syntax.");
         }
+        string prev_switch;
+        bool next_is_value = false;
         for (int i = 1; i < argc; ++i) {
             string arg = argv[i];
             if (isParameter(arg)) {
-                if (arg == "-mt" || arg == "--multithreaded")
+                if (arg == "-mt" || arg == "--multi_threaded")
                     m_multiThreaded = true;
+                else if (arg == "-nld" || arg == "--new_line_divider")
+                    m_new_line_is_divider = true;
                 else if (arg == "-h" || arg == "--help")
                     show_help(argv[0]);
+                else if (arg == "-d" || arg == "--divider")
+                    prev_switch = "d";
+                else if (arg == "-of" || arg == "--output_file")
+                    prev_switch = "of";
                 else {
                     cerr << "Unknown parameter " << arg << endl;
+                    throw invalid_argument("Invalid syntax.");
+                }
+            } else if (!prev_switch.empty()) {
+                if (prev_switch == "d") {
+                    m_divider = arg[0];
+                    prev_switch = "";
+                } else if (prev_switch == "of") {
+                    m_output_file = arg;
+                    prev_switch = "";
+                } else {
                     throw invalid_argument("Invalid syntax.");
                 }
             } else
                 m_files.emplace_back(arg);
         }
+
+        if (!prev_switch.empty())
+            throw invalid_argument("Missing value for argument '-" + prev_switch + "'");
+
+        if (m_files.empty())
+            throw invalid_argument("You must define at least one input file.");
     }
 
     ~Parser() = default;
@@ -59,7 +86,15 @@ public:
         return m_multiThreaded;
     }
 
+    bool isNewLineDivider() {
+        return m_new_line_is_divider;
+    }
+
     char getDivider() {
         return m_divider;
+    }
+
+    string getOutputFile() {
+        return m_output_file;
     }
 };
