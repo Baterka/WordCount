@@ -18,14 +18,15 @@ private:
     string m_output_file;
 
     void show_help(string program) {
-        cerr << program << " FILES" << endl
+        cerr << "Usage:" << endl
              << "\tFILES\t\t\t\t\t\t\t\t\tSource files (separated by space)\n"
-             << "\t-n COUNT, --ngram COUNT\t\t\t\t\t\t\t\tHow much words is one word (Optional, default is 1)\n"
+             << "\t-n COUNT, --ngram COUNT\t\t\t\t\tHow much words is one word (Optional, default is 1)\n"
              << "\t-h, --help\t\t\t\t\t\t\t\tShow this help message\n"
              << "\t-d CHAR, --divider CHAR \t\t\t\tWhat will be considered as word divider (Optional, default is \" \")\n"
              << "\t-nld, --new_line_divider \t\t\t\tNew line in file is also divider (Optional)\n"
              << "\t-mt, --multi_threaded \t\t\t\t\tRun each file in different thread (Optional)\n"
              << "\t-of FILENAME, --output_file FILENAME \tPrint output into file (Optional)\n";
+        exit(0);
     }
 
     static bool isParameter(string s) {
@@ -34,10 +35,8 @@ private:
 
 public:
     Parser(int argc, char *argv[]) {
-        if (argc < 2) {
+        if (argc < 2)
             show_help(argv[0]);
-            throw invalid_argument("Invalid syntax.");
-        }
         string prev_switch;
         bool next_is_value = false;
         for (int i = 1; i < argc; ++i) {

@@ -153,7 +153,6 @@ public:
 
         // Copy pairs from map to vector
         copy(m_words.begin(), m_words.end(), back_inserter<vector<pair<string, int>>>(output));
-
         // sort the vector DESC
         sort(output.begin(), output.end(), [](const pair<string, int> &l, const pair<string, int> &r) {
             return l.second > r.second;

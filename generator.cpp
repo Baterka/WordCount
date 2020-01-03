@@ -49,13 +49,17 @@ private:
     vector<int> m_words;
     int m_min = 1;
     int m_max = 5;
+    string m_output_dir = "";
     string m_alphabet = "abcdefghijklmnopqrstuvwxyz";
 
     void show_help(string program) {
-        cerr << program << " WORDS" << endl
+        cerr << "Usage:" << endl
              << "\tWORDS\t\t\t\t\t\t\t\tNumber of words in file (separated by space)\n"
+             << "\t-h, --help\t\t\t\t\t\t\t\tShow this help message\n"
              << "\t-r MIN MAX, --range MIN MAX \t\tWord size range (Optional)\n"
-             << "\t-a ALPHABET, --alphabet ALPHABET \tAlphabet used to generate words (Optional)\n";
+             << "\t-a ALPHABET, --alphabet ALPHABET \tAlphabet used to generate words (Optional)\n"
+             << "\t-od DIR, --output_dir DIR \tSave output files into this directory (Optional, default \".\")\n";
+       exit(0);
     }
 
     static bool isParameter(string s) {
@@ -64,10 +68,8 @@ private:
 
 public:
     Parser(int argc, char *argv[]) {
-        if (argc < 2) {
+        if (argc < 2)
             show_help(argv[0]);
-            throw invalid_argument("Invalid syntax.");
-        }
         string prev_switch;
         bool next_is_value = false;
         for (int i = 1; i < argc; ++i) {
@@ -77,6 +79,8 @@ public:
                     show_help(argv[0]);
                 else if (arg == "-r" || arg == "--range")
                     prev_switch = "r";
+                else if (arg == "-od" || arg == "--output_dir")
+                    prev_switch = "od";
                 else if (arg == "-a" || arg == "--alphabet")
                     prev_switch = "a";
                 else {
@@ -90,6 +94,9 @@ public:
                 } else if (prev_switch == "r") {
                     m_min = stoi(arg);
                     prev_switch = "r(2)";
+                } else if (prev_switch == "od") {
+                    m_output_dir = arg;
+                    prev_switch = "";
                 } else if (prev_switch == "r(2)") {
                     m_max = stoi(arg);
                     if (m_min > m_max)
@@ -122,12 +129,15 @@ public:
         return m_alphabet;
     }
 
+    string getOutputDir() {
+        return m_output_dir;
+    }
 };
 
 int main(int argc, char *argv[]) {
     try {
         // Parse input parameters
-        auto *parser = new Parser(argc, argv);
+        auto parser = new Parser(argc, argv);
 
         // Initialize generator
         Generator generator(parser->getRange(), parser->getAlphabet());
@@ -138,12 +148,13 @@ int main(int argc, char *argv[]) {
         cout << endl;
         cout << "\talphabet: " << generator.getAlphabet() << endl;
         const auto range = generator.getRange();
-        cout << "\tword_length_range: " << range.first << "-" << range.second << endl << endl;
+        cout << "\tword_length_range: " << range.first << "-" << range.second << endl;
+        cout << "\toutput_dir: " << parser->getOutputDir() << endl << endl;
 
         cout << "Generating files..." << endl;
         int index = 0;
         for (auto size : parser->getWords()) {
-            string fileName = "../words" + to_string(++index) + ".txt";
+            string fileName = parser->getOutputDir() + "words" + to_string(++index) + ".txt";
             ofstream out(fileName);
             for (int i = 0; i < size; i++)
                 out << generator.getRandomWord() + (i < size - 1 ? " " : "");
@@ -151,6 +162,7 @@ int main(int argc, char *argv[]) {
             cout << "\t" << fileName << endl;
         }
         cout << "Done." << endl;
+        delete parser;
         return 0;
     } catch (const std::exception &e) {
         cerr << "Error: " << e.what() << endl;

@@ -10,17 +10,22 @@ using namespace std;
 int main(int argc, char *argv[]) {
     try {
         // Parse input parameters
-        auto *parser = new Parser(argc, argv);
+        auto parser = new Parser(argc, argv);
 
         // Initialize counter
-        auto *counter = new Counter(parser->getFiles(), parser->isMultiThreaded(), parser->getDivider(),
-                                    parser->isNewLineDivider(), parser->getNGramSize());
+        auto counter = new Counter(
+                parser->getFiles(),
+                parser->isMultiThreaded(),
+                parser->getDivider(),
+                parser->isNewLineDivider(),
+                parser->getNGramSize()
+        );
 
         // Start time measurement
         auto start = chrono::steady_clock::now();
 
         // Count words
-        vector<pair<string, int>> words = counter->getWords();
+        vector<pair<string, int>> words = move(counter->getWords());
 
         // End time measurement (w/o print)
         auto end = chrono::steady_clock::now();
@@ -51,7 +56,8 @@ int main(int argc, char *argv[]) {
         // End time measurement (with print)
         auto end2 = chrono::steady_clock::now();
         cout << "\t\t\t\t\t" << chrono::duration_cast<chrono::milliseconds>(end2 - start).count() << "ms (total)";
-
+        delete parser;
+        delete counter;
     } catch (const std::exception &e) {
         cerr << "Error: " << e.what() << endl;
         return 0;
