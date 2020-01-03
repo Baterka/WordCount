@@ -22,6 +22,7 @@ cd Release
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make
 ```
+## [Speed measurement](https://github.com/Baterka/WordCount/wiki/Speed-measurement)
 ## Usage
 - [WordCount](https://github.com/Baterka/WordCount/wiki/WordCount) - *Creates dictionary of words (or n-grams) contained in input files and counts their frequency.*
 - [Generator](https://github.com/Baterka/WordCount/wiki/Generator) - *A utility to generate multiple word files with random words in them.*
