@@ -25,4 +25,4 @@ make
 ## Usage
 - [WordCount](https://github.com/Baterka/WordCount/wiki/WordCount) - *Creates dictionary of words (or n-grams) contained in input files and counts their frequency.*
 - [Generator](https://github.com/Baterka/WordCount/wiki/Generator) - *A utility to generate multiple word files with random words in them.*
-- [Tests](https://github.com/Baterka/WordCount/wiki/Tests) - *Unit tests*
+- [Tests](https://github.com/Baterka/WordCount/wiki/Tests) - *Unit tests (WIP)*
