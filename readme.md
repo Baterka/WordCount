@@ -12,7 +12,7 @@ Semestral project for the subject **[B6B36PJC](https://www.fel.cvut.cz/en/educat
 # Implementation
 ## Overview
 - **Written in:** [C++14](https://en.wikipedia.org/wiki/C%2B%2B)
-- Supports computing by threads
+- Supports multiple threads (One thread processing one file)
  ## Build
 ```bash
 git clone https://github.com/Baterka/WordCount.git
